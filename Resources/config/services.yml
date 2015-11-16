@@ -1,0 +1,28 @@
+services:
+    # form types
+    orangegate.form.form.type.field:
+        class: Symbio\OrangeGate\FormBundle\Form\Type\FieldType
+        tags:
+            - { name: form.type, alias: orangegate_form_field_type }
+
+    orangegate.form.form.type.form:
+        class: Symbio\OrangeGate\FormBundle\Form\Type\FormSelector
+        tags:
+            - { name: form.type, alias: orangegate_form_form }
+        arguments: [ @doctrine ]
+
+    # blocks
+    orangegate.form.block.form:
+        class: Symbio\OrangeGate\FormBundle\Block\FormBlockService
+        tags:
+            - { name: sonata.block }
+        arguments: [ orangegate.form.block.form, @templating, @doctrine.orm.entity_manager, @translator, @orangegate.form.factory ]
+
+    # other services
+    orangegate.form.factory:
+        class: Symbio\OrangeGate\FormBundle\Service\FormFactory
+        arguments: [ @form.factory, @translator ]
+
+    orangegate.form.mailer:
+        class: Symbio\OrangeGate\FormBundle\Service\Mailer
+        arguments: [ @mailer, @templating, 'todo@symbiodigital.com' ]

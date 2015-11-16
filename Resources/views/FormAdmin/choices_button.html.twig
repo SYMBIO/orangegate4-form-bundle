@@ -1,0 +1,6 @@
+{% if object.isChoice %}
+    <a class="btn btn-sm btn-default" href="{{ path('admin_orangegate_form_field_choice_list', {'id': object.id }) }}">
+        <i class="glyphicon glyphicon-list"></i>
+        {{ admin.trans('button.text_choices') }}
+    </a>
+{% endif %}

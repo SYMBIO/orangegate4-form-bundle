@@ -1,0 +1,9 @@
+{{ form_start(form, {
+    'action': url('symbio_orangegate_form_form_submit', {'formId': formId}),
+    'attr': {
+        'novalidate': 'novalidate'
+    }
+  })
+}}
+{{ form_widget(form) }}
+{{ form_end(form) }}
