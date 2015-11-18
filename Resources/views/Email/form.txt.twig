@@ -1,8 +1,18 @@
 {# \Symbio\OrangeGate\FormBundle\Entity formEntity #}
-
-Data z formuláře {{ formEntity.title }}
+Data z formuláře {{ formEntity.name }}
 
 {{ formEntity.description }}
 
 Data:
-{% for v %}
+
+{% for row in formData %}
+    {{ row.label }}:
+{% if row.value is iterable %}
+{% for val in row.value %}
+        - {{ val }}
+{% endfor %}
+{% else %}
+        {{ row.value }}
+{% endif %}
+
+{% endfor %}

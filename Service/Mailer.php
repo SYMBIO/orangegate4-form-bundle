@@ -21,6 +21,10 @@ class Mailer
     /** @var string|array $from */
     private $from;
 
+    private $templates = [
+        'dataForm' => 'SymbioOrangeGateFormBundle:Email:form.txt.twig',
+    ];
+
     /**
      * @param \Swift_Mailer $mailer
      * @param \Symfony\Bundle\TwigBundle\TwigEngine $templating
@@ -28,6 +32,7 @@ class Mailer
     public function __construct($mailer, $templating, $from) {
         $this->mailer = $mailer;
         $this->templating = $templating;
+        $this->from = $from;
     }
 
     /**
@@ -51,9 +56,8 @@ class Mailer
             // todo translate
             ->setSubject('Nová data z formuláře ' . $formEntity->getName())
             ->setBody(
-                // todo this should be changeable
                 $this->templating->render(
-                    'SymbioOrangeGateFormBundle:Email:form.txt.twig',
+                    $this->getTemplate('dataForm'),
                     [
                         'formEntity' => $formEntity,
                         'formData'   => $formData,
@@ -66,4 +70,29 @@ class Mailer
         return $this->mailer->send($message);
     }
 
+    /**
+     * Get template by name
+     * @param string $name
+     * @return mixed
+     */
+    public function getTemplate($name)
+    {
+        if (array_key_exists($name, $this->templates)) {
+            return $this->templates[$name];
+        }
+
+        throw new \InvalidArgumentException('Unknown name: ' . $name);
+    }
+
+    /**
+     * Set template for given key
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function setTemplate($name, $value)
+    {
+        $this->templates[$name] = $value;
+        return $this;
+    }
 }

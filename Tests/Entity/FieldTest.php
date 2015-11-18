@@ -1,12 +1,14 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User: jiri.bazant
  * Date: 16.11.15
  * Time: 10:32
  */
-class FieldTest extends PHPUnit_Framework_TestCase
+
+namespace Symbio\OrangeGate\FormBundle\Tests\Entity;
+
+class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function choiceProvider()
     {

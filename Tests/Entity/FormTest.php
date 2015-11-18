@@ -1,12 +1,14 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User: jiri.bazant
  * Date: 16.11.15
  * Time: 10:32
  */
-class FormTest extends PHPUnit_Framework_TestCase
+
+namespace Symbio\OrangeGate\FormBundle\Tests\Entity;
+
+class FormTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests extended logic on form recipients
