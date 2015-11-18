@@ -171,7 +171,7 @@ class Form
     }
 
     /**
-     * @param Recipient $recipients
+     * @param array $recipients
      * @return $this
      */
     public function setRecipients($recipients)

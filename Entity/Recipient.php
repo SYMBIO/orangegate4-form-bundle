@@ -52,7 +52,7 @@ class Recipient
      * @param $form
      * @param int $id
      */
-    public function __construct($name, $email, $form, $id)
+    public function __construct($name = null, $email = null, $form = null, $id = null)
     {
         $this->id = $id;
         $this->name = $name;
