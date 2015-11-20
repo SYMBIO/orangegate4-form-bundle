@@ -261,4 +261,10 @@ class Form
     {
         return count($this->getRecipients()) > 0;
     }
+
+    public function __toString()
+    {
+        // todo translatable?
+        return "Form " . $this->getName();
+    }
 }

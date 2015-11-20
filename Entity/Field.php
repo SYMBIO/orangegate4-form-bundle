@@ -58,6 +58,25 @@ class Field
     protected $priority;
 
     /**
+     * @var null|string
+     * @ORM\Column(type="text", length=32, nullable=true, name="validation_type")
+     */
+    protected $validationType;
+
+    /**
+     * @var null|string
+     * @ORM\Column(type="text", length=255, nullable=true, name="validation_settings")
+     */
+    protected $validationSettings;
+
+    /**
+     * @Gedmo\Translatable
+     * @var null|string
+     * @ORM\Column(type="text", length=255, nullable=true, name="validation_message")
+     */
+    protected $validationMessage;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Form", inversedBy="fields")
      * @ORM\JoinColumn(name="form_id", referencedColumnName="id", nullable=false)
      */
@@ -83,13 +102,14 @@ class Field
      * @param bool $required
      * @param int $priority
      */
-    public function __construct($id = null, $label = null, $type = null, $required = null, $priority = null)
+    public function __construct($id = null, $label = null, $type = null, $required = null, $priority = null, $validation = null)
     {
         $this->id = $id;
         $this->label = $label;
         $this->type = $type;
         $this->required = $required;
         $this->priority = $priority;
+        $this->validationType = $validation;
 
         $this->translations = new ArrayCollection();
         $this->choices = new ArrayCollection();
@@ -223,6 +243,60 @@ class Field
     }
 
     /**
+     * @return null|string
+     */
+    public function getValidationType()
+    {
+        return $this->validationType;
+    }
+
+    /**
+     * @param null|string $validationType
+     * @return $this
+     */
+    public function setValidationType($validationType)
+    {
+        $this->validationType = $validationType;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getValidationSettings()
+    {
+        return $this->validationSettings;
+    }
+
+    /**
+     * @param null|string $validationSettings
+     * @return $this
+     */
+    public function setValidationSettings($validationSettings)
+    {
+        $this->validationSettings = $validationSettings;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getValidationMessage()
+    {
+        return $this->validationMessage;
+    }
+
+    /**
+     * @param null|string $validationMessage
+     * @return $this
+     */
+    public function setValidationMessage($validationMessage)
+    {
+        $this->validationMessage = $validationMessage;
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getTranslations()
@@ -266,6 +340,10 @@ class Field
         return null;
     }
 
+    /**
+     * Specifies whether field has choices
+     * @return bool
+     */
     public function isChoice()
     {
         return in_array($this->getType(), ['select', 'radio', 'checkboxes']);
@@ -285,7 +363,10 @@ class Field
         return $ret;
     }
 
-
+    /**
+     * Returns form field type for formbuilder
+     * @return string
+     */
     public function getFormFieldType()
     {
         if ($this->isChoice()) {
@@ -295,13 +376,16 @@ class Field
         }
     }
 
+    /**
+     * Returns params array for formbuilder
+     * @return array
+     */
     public function getFormFieldParams()
     {
         $params = [
             'label' => $this->getLabel(),
             'required' => $this->isRequired(),
         ];
-
 
         if ($this->isChoice()) {
             $params['choices'] = $this->getChoicesArray();
@@ -318,5 +402,11 @@ class Field
         }
 
         return $params;
+    }
+
+    public function __toString()
+    {
+        // todo translation?
+        return 'Field ' . $this->getLabel() . '(' . $this->getType() . ')';
     }
 }

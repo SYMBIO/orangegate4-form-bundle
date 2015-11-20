@@ -27,10 +27,13 @@ class FieldAdmin extends BaseAdmin
                 'label' => false,
                 'fields' => [
                     'label' => ['label' => 'label.field_label'],
+                    'validationMessage' => ['label' => 'label.field_validation_message'],
                 ],
             ])
             ->add('type', 'orangegate_form_field_type', ['label' => 'label.field_type'])
             ->add('required', null, ['label' => 'label.field_required'])
+            ->add('validationType', 'orangegate_form_field_validation_type', ['label' => 'label.field_validation_type'])
+            ->add('validationSettings', null, ['label' => 'label.field_validation_settings'])
             ->add('priority', null, ['label' => 'label.field_priority'])
         ;
     }
@@ -60,7 +63,6 @@ class FieldAdmin extends BaseAdmin
             ->add('_action', 'actions', [
                 'label' => 'label.form_actions',
                 'actions' => [
-                    'show' => [],
                     'edit' => [],
                     'fields' => ['template' => 'SymbioOrangeGateFormBundle:FormAdmin:choices_button.html.twig'],
                 ]])

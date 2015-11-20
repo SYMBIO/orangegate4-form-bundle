@@ -51,6 +51,12 @@ class FieldTranslation extends AbstractTranslation
     protected $label;
 
     /**
+     * @var null|string
+     * @ORM\Column(type="text", length=255, nullable=true, name="validation_message")
+     */
+    protected $validationMessage;
+
+    /**
      * @return int
      */
     public function getId()
@@ -121,4 +127,24 @@ class FieldTranslation extends AbstractTranslation
         $this->label = $label;
         return $this;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getValidationMessage()
+    {
+        return $this->validationMessage;
+    }
+
+    /**
+     * @param null|string $validation_message
+     * @return $this
+     */
+    public function setValidationMessage($validation_message)
+    {
+        $this->validationMessage = $validation_message;
+        return $this;
+    }
+
+
 }
