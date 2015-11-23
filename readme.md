@@ -6,6 +6,7 @@ Allows users to create simple forms as Page blocks.
 
 ## Instalation
 Prefered way is via composer:
+
     composer require symbio/orangegate4-form-bundle
 
 Then add bundle initialization to ````AppKernel.php````
@@ -35,15 +36,18 @@ To display Form admin at dashboard add ````orangegeate.form.admin.form```` to ``
                         - orangegate.form.admin.form # this line is the only one you probably do not have already
 
 Allow user access javascript via assetic
-  - allow ````SymbioOrangeGateFormBundle```` in ````config.yml```` - your new configuration should probably look like this
+
+- allow ````SymbioOrangeGateFormBundle```` in ````config.yml```` - your new configuration should probably look like this
+
 
     assetic:
         debug:          "%kernel.debug%"
         use_controller: false
         bundles:        [SymbioOrangeGateAdminBundle, SymbioOrangeGateFormBundle]
+
     
-  - make sure to clear your app cache (````php app/console cache:clear````)
-  - publish assets with assetic (````php app/console assets:install web````)
+- make sure to clear your app cache (````php app/console cache:clear````)
+- publish assets with assetic (````php app/console assets:install web````)
   
 ## Usage
 **TODO**
