@@ -65,7 +65,7 @@ class FormBlockService extends BaseBlockService
 
         // load form model
         if (NULL === $settings['form_id']) {
-            // todo find  batter bad configuration exception
+            // todo find better bad configuration exception
             throw new EntityNotFoundException('Form_id not specified');
         }
 

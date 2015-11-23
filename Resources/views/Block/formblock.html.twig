@@ -8,13 +8,14 @@
         </div>
 
         {# todo remove this line, when the javascript block will be working #}
-        <script src="{{ asset('bundles/symbioorangegateform/form.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('bundles/symbioorangegateform/js/form.js') }}" type="text/javascript"></script>
+        <link rel="stylesheet" href="{{ asset('bundles/symbioorangegateform/css/form.css') }}">
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {% javascripts %}
         {# todo how to make this to work? #}
-        <script src="{{ asset('bundles/symbioorangegateform/form.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('bundles/symbioorangegateform/js/form.js') }}" type="text/javascript"></script>
     {% endjavascripts %}
 {% endblock %}

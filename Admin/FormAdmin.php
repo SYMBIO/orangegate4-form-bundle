@@ -51,9 +51,8 @@ class FormAdmin extends BaseAdmin
             ->add('_action', 'actions', [
                 'label' => 'label.form_actions',
                 'actions' => [
-                    'show' => [],
                     'edit' => [],
-                    'fields' => ['template' => 'SymbioOrangeGateFormBundle:FormAdmin:fields_button.html.twig'],
+                    'fields' =>  ['template' => 'SymbioOrangeGateFormBundle:FormAdmin:fields_button.html.twig'],
             ]])
         ;
     }

@@ -35,10 +35,10 @@ To display Form admin at dashboard add ````orangegeate.form.admin.form```` to ``
                     items:
                         - orangegate.form.admin.form # this line is the only one you probably do not have already
 
-Allow user access javascript via assetic
+Allow user access javascript and css via assetic
 
 - allow ````SymbioOrangeGateFormBundle```` in ````config.yml```` - your new configuration should probably look like this
-
+    
 
     assetic:
         debug:          "%kernel.debug%"
