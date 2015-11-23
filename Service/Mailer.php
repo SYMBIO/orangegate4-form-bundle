@@ -9,6 +9,7 @@
 namespace Symbio\OrangeGate\FormBundle\Service;
 
 use Symbio\OrangeGate\FormBundle\Entity\Form;
+use Symbio\OrangeGate\FormBundle\Exception\InvalidArgumentException;
 
 class Mailer
 {
@@ -73,7 +74,7 @@ class Mailer
             return $this->templates[$name];
         }
 
-        throw new \InvalidArgumentException('Unknown name: ' . $name);
+        throw new InvalidArgumentException('Unknown name: ' . $name);
     }
 
     /**

@@ -12,6 +12,7 @@ use Symbio\OrangeGate\FormBundle\Entity\Field;
 use Symbio\OrangeGate\FormBundle\Entity\Form;
 use Symbio\OrangeGate\FormBundle\Entity\Choice;
 use Symbio\OrangeGate\FormBundle\Service\FormFactory;
+use Symfony\Component\Validator\Constraints;
 
 class FormFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,16 +54,19 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Creates Symfony Form Builder
+     * @param bool $addExpectation default true
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getFormBuilderMock()
+    private function getFormBuilderMock($addExpectation = true)
     {
         $formBuilder = $this->getMockBuilder('\Symfony\Component\Form\FormBuilder')
             ->disableOriginalConstructor()
             ->getMock()
         ;
 
-        $formBuilder->expects($this->once())->method('getForm')->willReturn('Some unique string. Yea!');
+        if ($addExpectation) {
+            $formBuilder->expects($this->once())->method('getForm')->willReturn('Some unique string. Yea!');
+        }
 
         return $formBuilder;
     }
@@ -74,18 +78,18 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateFormSimple()
     {
         $formBuilder = $this->getFormBuilderMock();
-        $formBuilder->expects($this->exactly(3))
+        $formBuilder->expects($this->atLeast(3)) // it will be called 4 times cause of honeypot field
             ->method('add')
             ->withConsecutive(
                 ['field_1', 'text', ['label' => 'Item 1', 'required' => false]],
-                ['field_2', 'textarea', ['label' => 'Item 2', 'required' => true]],
+                ['field_2', 'textarea', ['label' => 'Item 2', 'required' => false]],
                 ['submit', 'submit', ['label' => 'Odeslat']]
             );
 
         $formEntity = new Form(1, 'TestSimple', null, 1, 'Odeslat');
         $formEntity->setFields([
             new Field(1, 'Item 1', 'text', false, 1),
-            new Field(2, 'Item 2', 'textarea', true, 2),
+            new Field(2, 'Item 2', 'textarea', false, 2),
         ]);
 
         $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
@@ -101,20 +105,19 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateFormPriority()
     {
         $formBuilder = $this->GetFormBuilderMock();
-        $formBuilder->expects($this->exactly(3))
+        $formBuilder->expects($this->atLeast(3))
             ->method('add')
             ->withConsecutive(
-                ['field_2', 'textarea', ['label' => 'Item 2', 'required' => true]],
-                ['field_3', 'textarea', ['label' => 'Item 3', 'required' => true]],
-                ['field_1', 'textarea', ['label' => 'Item 1', 'required' => true]],
-                ['submit', 'submit', ['label' => 'Odeslat']]
+                ['field_2', 'textarea', ['label' => 'Item 2', 'required' => false]],
+                ['field_3', 'textarea', ['label' => 'Item 3', 'required' => false]],
+                ['field_1', 'textarea', ['label' => 'Item 1', 'required' => false]]
             );
 
-        $formEntity = new Form(1, 'TestSimple', null, 1);
+        $formEntity = new Form(1, 'TestSimple', null, 1, 'Odeslat');
         $formEntity->setFields([
-            new Field(1, 'Item 1', 'textarea', true, 5),
-            new Field(2, 'Item 2', 'textarea', true, 1),
-            new Field(3, 'Item 3', 'textarea', true, 1),
+            new Field(1, 'Item 1', 'textarea', false, 5),
+            new Field(2, 'Item 2', 'textarea', false, 1),
+            new Field(3, 'Item 3', 'textarea', false, 1),
         ]);
 
         $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
@@ -128,28 +131,35 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateFormValidators()
     {
-        $this->markTestIncomplete('Not implemented yet');
         $formBuilder = $this->GetFormBuilderMock();
-        $formBuilder->expects($this->exactly(3))
+        $formBuilder->expects($this->atLeast(3))
             ->method('add')
             ->withConsecutive(
-                ['field_1', 'textarea', ['label' => 'Item 1', 'required' => true]],
-                ['field_2', 'textarea', ['label' => 'Item 2', 'required' => true]],
-                ['field_3', 'textarea', ['label' => 'Item 3', 'required' => true]],
-                ['submit', 'submit', ['label' => 'Odeslat']]
+                ['field_1', 'text', ['label' => 'Item 1', 'required' => false]],
+                ['field_2', 'text', ['label' => 'Item 2', 'required' => true, 'constraints' => [
+                    new Constraints\NotBlank(),
+                    new Constraints\Type(['type' => 'numeric',]),
+                ]]],
+                ['field_3', 'text', ['label' => 'Item 3', 'required' => false, 'constraints' => [new Constraints\Email([
+                    'message' => 'neni email'
+                ])]]],
+                ['field_4', 'text', ['label' => 'Item 4', 'required' => false, 'constraints' => [new Constraints\Regex([
+                    'pattern' => '/^ahoj$/',
+                    'message' => 'neni ahoj',
+                ])]]]
             );
 
         $formEntity = new Form(1, 'TestSimple', null, 1);
         $formEntity->setFields([
-            new Field(1, 'Item 1', 'textarea', true, 1),
-            new Field(2, 'Item 2', 'textarea', true, 1),
-            new Field(3, 'Item 3', 'textarea', true, 1),
+            new Field(1, 'Item 1', 'text', false, 1, 'none'),
+            new Field(2, 'Item 2', 'text', true, 1, 'number'),
+            new Field(3, 'Item 3', 'text', false, 1, 'email', 'neni email'),
+            new Field(4, 'Item 4', 'text', false, 1, 'regexp', 'neni ahoj', '/^ahoj$/')
         ]);
 
         $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
 
-        // a bit fake test, but we want to test that createForm returns result of FormBuilder->getForm();
-        $this->assertEquals('Some unique string. Yea!', $factory->createForm($formEntity));
+        $factory->createForm($formEntity);
     }
 
     /**
@@ -157,7 +167,23 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testHoneyPot()
     {
-        $this->markTestIncomplete('Not implemented yet');
+        $formBuilder = $this->GetFormBuilderMock();
+        $formBuilder->expects($this->exactly(3))
+            ->method('add')
+            ->withConsecutive(
+                ['field_1', 'text', ['label' => 'Item 1', 'required' => false]],
+                ['submit', 'submit', ['label' => 'Odeslat']],
+                ['email', 'email', ['label' => 'form.label_honeypot', 'required' => false, 'constraints' => [new Constraints\Blank()]]]
+            );
+
+        $formEntity = new Form(1, 'TestSimple', null, 1, 'Odeslat');
+        $formEntity->setFields([
+            new Field(1, 'Item 1', 'text', false, 1, 'none'),
+        ]);
+
+        $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
+
+        $factory->createForm($formEntity);
     }
 
     /**
@@ -200,5 +226,22 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
             ],
             $factory->getFormData($formEntity, $formStub)
         );
+    }
+
+    /**
+     * @expectedException \Symbio\OrangeGate\FormBundle\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Unknown validation type: invalid_validation_name
+     */
+    public function testInvalidValidationTypeThrowsException()
+    {
+        $formBuilder = $this->GetFormBuilderMock(false);
+
+        $formEntity = new Form(1, 'TestSimple', null, 1, 'Odeslat');
+        $formEntity->setFields([
+            new Field(1, 'Item 1', 'text', false, 1, 'invalid_validation_name'),
+        ]);
+
+        $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
+        $factory->createForm($formEntity);
     }
 }

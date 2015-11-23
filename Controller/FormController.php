@@ -43,9 +43,9 @@ class FormController extends Controller
         if ($form->isValid()) {
             $return['success'] = true;
 
-            $data = $formFactory->getFormData($formModel, $formFactory);
+            $data = $formFactory->getFormData($formModel, $form);
 
-            // todo save data to db
+            // todo save data to db (time, ip, user_agent, ...)
 
             if ($formModel->isEmailable()) {
                 $this->get('orangegate.form.mailer')->sendFormDataEmail($data, $formModel);

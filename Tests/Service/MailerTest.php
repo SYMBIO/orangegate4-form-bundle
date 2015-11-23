@@ -91,4 +91,18 @@ class MailerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(2, $mailer->sendFormDataEmail($formData, $formModel));
     }
+
+    /**
+     * @expectedException \Symbio\OrangeGate\FormBundle\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Unknown name: invalid_tpl_name
+     */
+    public function testInvalidTplNameThrowsException()
+    {
+        $mailerMock = $this->getMockBuilder('\Swift_Mailer')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $mailer = new Mailer($mailerMock, $this->getTemplatingStub(), ['tester@test.eu', 'Tester Eu']);
+        $mailer->getTemplate('invalid_tpl_name');
+    }
 }

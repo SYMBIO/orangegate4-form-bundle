@@ -100,16 +100,28 @@ class Field
      * @param $label
      * @param $type
      * @param bool $required
+     * @param string $validationType
+     * @param string $validationSettings
      * @param int $priority
      */
-    public function __construct($id = null, $label = null, $type = null, $required = null, $priority = null, $validation = null)
-    {
+    public function __construct(
+        $id = null,
+        $label = null,
+        $type = null,
+        $required = null,
+        $priority = null,
+        $validationType = null,
+        $validationMessage = null,
+        $validationSettings = null
+    ) {
         $this->id = $id;
         $this->label = $label;
         $this->type = $type;
         $this->required = $required;
         $this->priority = $priority;
-        $this->validationType = $validation;
+        $this->validationType = $validationType;
+        $this->validationSettings = $validationSettings;
+        $this->validationMessage = $validationMessage;
 
         $this->translations = new ArrayCollection();
         $this->choices = new ArrayCollection();

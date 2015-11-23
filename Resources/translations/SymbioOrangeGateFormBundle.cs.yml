@@ -1,7 +1,7 @@
 button.text_fields: 'Položky'
 button.text_choices: 'Volby'
 
-form.button_submit: 'Odeslat'
+form.label_honeypot: 'Toto pole ponechte prázdné'
 
 label.form_id: '#'
 label.form_name: 'Název Formuláře'
