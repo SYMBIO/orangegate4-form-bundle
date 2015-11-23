@@ -31,7 +31,7 @@ class MailerTest extends \PHPUnit_Framework_TestCase
         ;
         // expected send from
         $messageMock->expects($this->once())->method('setFrom')
-            ->with('tester@test.eu', 'Tester Eu')
+            ->with('tester@test.eu')
             ->willReturnSelf();
 
         // expected recipients
@@ -65,7 +65,7 @@ class MailerTest extends \PHPUnit_Framework_TestCase
             new Choice('Choice 1', 1),
             new Choice('Choice 2', 2),
         ]);
-        $formModel = new Form(1, 'Test form', 'Form description', 1);
+        $formModel = new Form(1, 'Test form', 'Form description', 1, 'Odeslat', 'tester@test.eu');
 
         $formModel->setFields([
             new Field(1, 'Item 1 Label', 'textarea'),

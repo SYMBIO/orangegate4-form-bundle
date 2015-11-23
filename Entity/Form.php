@@ -54,6 +54,19 @@ class Form
     protected $site;
 
     /**
+     * @Gedmo\Translatable
+     * @var string
+     * @ORM\Column(type="text", length=255, nullable=false, name="submit_label")
+     */
+    protected $submitLabel;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", length=255, nullable=true, name="email_from")
+     */
+    protected $emailFrom;
+
+    /**
      * @var Recipient
      *
      * @ORM\OneToMany(targetEntity="Recipient", mappedBy="form", cascade={"persist"})
@@ -78,12 +91,14 @@ class Form
      * @param $description
      * @param Site $site
      */
-    public function __construct($id = null, $name = null, $description = null, $site = null)
+    public function __construct($id = null, $name = null, $description = null, $site = null, $submitLabel = null, $emailFrom = null)
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->site = $site;
+        $this->submitLabel = $submitLabel;
+        $this->emailFrom = $emailFrom;
 
         $this->recipients = new ArrayCollection();
         $this->fields = new ArrayCollection();
@@ -159,6 +174,42 @@ class Form
     public function setSite($site)
     {
         $this->site = $site;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubmitLabel()
+    {
+        return $this->submitLabel;
+    }
+
+    /**
+     * @param mixed $submitLabel
+     * @return $this
+     */
+    public function setSubmitLabel($submitLabel)
+    {
+        $this->submitLabel = $submitLabel;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailFrom()
+    {
+        return $this->emailFrom;
+    }
+
+    /**
+     * @param string $emailFrom
+     * @return $this
+     */
+    public function setEmailFrom($emailFrom)
+    {
+        $this->emailFrom = $emailFrom;
         return $this;
     }
 
@@ -264,7 +315,6 @@ class Form
 
     public function __toString()
     {
-        // todo translatable?
-        return "Form " . $this->getName();
+        return $this->getName();
     }
 }

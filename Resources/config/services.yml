@@ -26,8 +26,8 @@ services:
     # other services
     orangegate.form.factory:
         class: Symbio\OrangeGate\FormBundle\Service\FormFactory
-        arguments: [ @form.factory, @translator ]
+        arguments: [ @form.factory ]
 
     orangegate.form.mailer:
         class: Symbio\OrangeGate\FormBundle\Service\Mailer
-        arguments: [ @mailer, @templating, 'todo@symbiodigital.com' ]
+        arguments: [ @mailer, @templating ]

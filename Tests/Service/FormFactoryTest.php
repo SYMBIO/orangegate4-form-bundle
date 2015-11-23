@@ -1,17 +1,25 @@
 <?php
-
-use Symbio\OrangeGate\FormBundle\Entity\Field;
-use Symbio\OrangeGate\FormBundle\Entity\Form;
-use Symbio\OrangeGate\FormBundle\Entity\Choice;
-use Symbio\OrangeGate\FormBundle\Service\FormFactory;
 /**
  * Created by PhpStorm.
  * User: jiri.bazant
  * Date: 16.11.15
  * Time: 9:23
  */
-class FormFactoryTest extends PHPUnit_Framework_TestCase
+
+namespace Symbio\OrangeGate\FormBundle\Tests\Service;
+
+use Symbio\OrangeGate\FormBundle\Entity\Field;
+use Symbio\OrangeGate\FormBundle\Entity\Form;
+use Symbio\OrangeGate\FormBundle\Entity\Choice;
+use Symbio\OrangeGate\FormBundle\Service\FormFactory;
+
+class FormFactoryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Creates Symfony Form Factory stub object
+     * @param $builderMock
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
     private function getFormFactoryStub($builderMock)
     {
         $formFactory = $this->getMockBuilder('\Symfony\Component\Form\FormFactory')
@@ -27,6 +35,10 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
         return $formFactory;
     }
 
+    /**
+     * Creates Symfony Translator Stub
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
     private function getTranslatorStub()
     {
         $translatorStub = $this->getMockBuilder('\Symfony\Component\Translation\LoggingTranslator')
@@ -39,6 +51,10 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
         return $translatorStub;
     }
 
+    /**
+     * Creates Symfony Form Builder
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
     private function getFormBuilderMock()
     {
         $formBuilder = $this->getMockBuilder('\Symfony\Component\Form\FormBuilder')
@@ -52,6 +68,9 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * Tests simple form creation
+     */
     public function testCreateFormSimple()
     {
         $formBuilder = $this->getFormBuilderMock();
@@ -60,10 +79,10 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
             ->withConsecutive(
                 ['field_1', 'text', ['label' => 'Item 1', 'required' => false]],
                 ['field_2', 'textarea', ['label' => 'Item 2', 'required' => true]],
-                ['submit', 'submit', ['label' => 'form.button_submit']]
+                ['submit', 'submit', ['label' => 'Odeslat']]
             );
 
-        $formEntity = new Form(1, 'TestSimple', null, 1);
+        $formEntity = new Form(1, 'TestSimple', null, 1, 'Odeslat');
         $formEntity->setFields([
             new Field(1, 'Item 1', 'text', false, 1),
             new Field(2, 'Item 2', 'textarea', true, 2),
@@ -71,10 +90,14 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
 
         $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
 
+        // a bit fake test, but we want to test that createForm returns result of FormBuilder->getForm();
         $this->assertEquals('Some unique string. Yea!', $factory->createForm($formEntity));
     }
 
 
+    /**
+     * Tests that form fields are ordered by priority
+     */
     public function testCreateFormPriority()
     {
         $formBuilder = $this->GetFormBuilderMock();
@@ -96,26 +119,53 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
 
         $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
 
+        $factory->createForm($formEntity);
+    }
+
+
+    /**
+     * Tests that validators are created according to Field settings
+     */
+    public function testCreateFormValidators()
+    {
+        $this->markTestIncomplete('Not implemented yet');
+        $formBuilder = $this->GetFormBuilderMock();
+        $formBuilder->expects($this->exactly(3))
+            ->method('add')
+            ->withConsecutive(
+                ['field_1', 'textarea', ['label' => 'Item 1', 'required' => true]],
+                ['field_2', 'textarea', ['label' => 'Item 2', 'required' => true]],
+                ['field_3', 'textarea', ['label' => 'Item 3', 'required' => true]],
+                ['submit', 'submit', ['label' => 'Odeslat']]
+            );
+
+        $formEntity = new Form(1, 'TestSimple', null, 1);
+        $formEntity->setFields([
+            new Field(1, 'Item 1', 'textarea', true, 1),
+            new Field(2, 'Item 2', 'textarea', true, 1),
+            new Field(3, 'Item 3', 'textarea', true, 1),
+        ]);
+
+        $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());
+
         // a bit fake test, but we want to test that createForm returns result of FormBuilder->getForm();
         $this->assertEquals('Some unique string. Yea!', $factory->createForm($formEntity));
     }
 
-
-    public function testCreateFormValidators()
-    {
-        $this->markTestIncomplete('Not implemented yet');
-    }
-
+    /**
+     * Tests that honey pod field is created automaticaly
+     */
     public function testHoneyPot()
     {
         $this->markTestIncomplete('Not implemented yet');
     }
 
+    /**
+     * Test FormFactory form data transformation
+     */
     public function testGetFormData()
     {
-        // todo test multiple value field
-        $factory = new FormFactory($this->getFormFactoryStub(null), $this->getTranslatorStub());
-
+        // create form entity
         $fieldChoice = new Field(3, 'Field 3 choice Label', 'radio');
         $fieldChoice->setChoices([
             new Choice('Choice 1', 1),
@@ -128,6 +178,7 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
             $fieldChoice,
         ]);
 
+        // create form stub
         $formStub = $this->getMockBuilder('\Symfony\Component\Form\Form')
             ->disableOriginalConstructor()
             ->getMock()
@@ -137,6 +188,9 @@ class FormFactoryTest extends PHPUnit_Framework_TestCase
             'field_2' => 2,
             'field_3' => 2,
         ]);
+
+        // create factory and test response
+        $factory = new FormFactory($this->getFormFactoryStub(null), $this->getTranslatorStub());
 
         $this->assertEquals(
             [

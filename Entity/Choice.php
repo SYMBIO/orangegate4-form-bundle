@@ -229,4 +229,10 @@ class Choice
 
         return null;
     }
+
+
+    public function __toString()
+    {
+        return $this->getLabel();
+    }
 }

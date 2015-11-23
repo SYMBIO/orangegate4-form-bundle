@@ -18,9 +18,6 @@ class Mailer
     /** @var \Symfony\Bundle\TwigBundle\TwigEngine $templating */
     private $templating;
 
-    /** @var string|array $from */
-    private $from;
-
     private $templates = [
         'dataForm' => 'SymbioOrangeGateFormBundle:Email:form.txt.twig',
     ];
@@ -29,10 +26,9 @@ class Mailer
      * @param \Swift_Mailer $mailer
      * @param \Symfony\Bundle\TwigBundle\TwigEngine $templating
      */
-    public function __construct($mailer, $templating, $from) {
+    public function __construct($mailer, $templating) {
         $this->mailer = $mailer;
         $this->templating = $templating;
-        $this->from = $from;
     }
 
     /**
@@ -45,11 +41,7 @@ class Mailer
         /** @var \Swift_Message $message */
         $message = $this->mailer->createMessage();
 
-        if (is_array($this->from)) {
-            $message->setFrom($this->from[0], $this->from[1]);
-        } else {
-            $message->setFrom($this->from);
-        }
+        $message->setFrom($formEntity->getEmailFrom());
 
         $message
             ->setTo($formEntity->getRecipientsArray())

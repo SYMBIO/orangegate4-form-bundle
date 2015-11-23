@@ -406,7 +406,6 @@ class Field
 
     public function __toString()
     {
-        // todo translation?
-        return 'Field ' . $this->getLabel() . '(' . $this->getType() . ')';
+        return $this->getLabel() . '(' . $this->getType() . ')';
     }
 }

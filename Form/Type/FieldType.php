@@ -44,6 +44,10 @@ class FieldType extends AbstractType
         return 'orangegate_form_field_type';
     }
 
+    /**
+     * Returns key => label pairs of available choices
+     * @return array
+     */
     public static function getChoices()
     {
         return [

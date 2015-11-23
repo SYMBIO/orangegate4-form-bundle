@@ -26,8 +26,10 @@ class FormAdmin extends BaseAdmin
                 'fields' => [
                     'name' => ['label' => 'label.form_name'],
                     'description' => ['label' => 'label.form_description'],
+                    'submitLabel' => ['label' => 'label.form_submit_label'],
                 ],
             ])
+            ->add('emailFrom', 'email', ['label' => 'label.form_email_from', 'required' => false])
         ;
     }
 

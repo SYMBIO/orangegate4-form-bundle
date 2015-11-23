@@ -132,4 +132,9 @@ class Recipient
         $this->form = $form;
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getName() . '(' . $this->getEmail() . ')';
+    }
 }

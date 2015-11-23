@@ -25,21 +25,15 @@ class FormFactory
      */
     protected $formFactory;
 
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
 
     /**
      * FormFactory constructor.
      * @param Factory $formFactory
      * @param TranslatorInterface $translator
      */
-    public function __construct(Factory $formFactory, TranslatorInterface $translator)
+    public function __construct(Factory $formFactory)
     {
         $this->formFactory = $formFactory;
-        $this->translator = $translator;
     }
 
 
@@ -56,7 +50,7 @@ class FormFactory
         foreach ($formEntity->getFields() as $field) {
             $formBuilder->add('field_' . $field->getId(), $field->getFormFieldType(), $field->getFormFieldParams());
         }
-        $formBuilder->add('submit', 'submit', ['label' => $this->translator->trans('form.button_submit', [], 'SymbioOrangeGateFormBundle')]);
+        $formBuilder->add('submit', 'submit', ['label' => $formEntity->getSubmitLabel()]);
 
         // todo set up validation?
 

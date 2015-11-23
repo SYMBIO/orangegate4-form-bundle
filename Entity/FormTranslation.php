@@ -56,15 +56,22 @@ class FormTranslation extends AbstractTranslation
     protected $description;
 
     /**
+     * @var string
+     * @ORM\Column(type="text", length=255, nullable=false, name="submit_label")
+     */
+    protected $submitLabel;
+
+    /**
      * @param null|string $locale
      * @param null|string $name
      * @param null|string $description
      */
-    public function __construct($locale = null, $name = null, $description = null)
+    public function __construct($locale = null, $name = null, $description = null, $submitLabel = null)
     {
         $this->locale = $locale;
         $this->name = $name;
         $this->description = $description;
+        $this->submitLabel = $submitLabel;
     }
 
     /**
@@ -154,6 +161,24 @@ class FormTranslation extends AbstractTranslation
     public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubmitLabel()
+    {
+        return $this->submitLabel;
+    }
+
+    /**
+     * @param string $submitLabel
+     * @return $this
+     */
+    public function setSubmitLabel($submitLabel)
+    {
+        $this->submitLabel = $submitLabel;
         return $this;
     }
 }

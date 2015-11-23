@@ -2,7 +2,7 @@ services:
     orangegate.form.admin.choice:
         class: Symbio\OrangeGate\FormBundle\Admin\ChoiceAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Content, label: Form }
+            - { name: sonata.admin, manager_type: orm, group: Content, label: Choice }
         arguments:
             - ~
             - Symbio\OrangeGate\FormBundle\Entity\Choice
@@ -14,7 +14,7 @@ services:
     orangegate.form.admin.field:
         class: Symbio\OrangeGate\FormBundle\Admin\FieldAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Content, label: Form }
+            - { name: sonata.admin, manager_type: orm, group: Content, label: Field }
         arguments:
             - ~
             - Symbio\OrangeGate\FormBundle\Entity\Field
