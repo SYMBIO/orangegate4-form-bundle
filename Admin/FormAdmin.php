@@ -12,13 +12,62 @@ use Symbio\OrangeGate\AdminBundle\Admin\Admin as BaseAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Symbio\OrangeGate\PageBundle\Entity\SitePool;
 
 
 class FormAdmin extends BaseAdmin
 {
-    // Fields to be shown on create/edit forms
+    /**
+     * @var SitePool
+     */
+    protected $sitePool;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($code, $class, $baseControllerName, SitePool $sitePool)
+    {
+        parent::__construct($code, $class, $baseControllerName);
+
+        $this->sitePool = $sitePool;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPersistentParameters()
+    {
+        // todo k cemu je tohle?
+        $parameters = parent::getPersistentParameters();
+
+        if ($this->hasRequest()) {
+            $parameters['site_id'] = $this->sitePool->getCurrentSite($this->getRequest());
+        }
+
+        return $parameters;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNewInstance()
+    {
+        $object = parent::getNewInstance();
+        $object->setSite($this->sitePool->getCurrentSite($this->getRequest()));
+
+        return $object;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        // Fields to be shown on create/edit forms
         $formMapper
             ->add('translations', 'orangegate_translations', [
                 'translation_domain' => $this->translationDomain,
@@ -33,17 +82,29 @@ class FormAdmin extends BaseAdmin
         ;
     }
 
-    // Fields to be shown on filter forms
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
+        // Fields to be shown on filter forms
         $datagridMapper
             ->add('name')
+            ->add('site', null, array(
+                'show_filter' => false,
+            ))
+
         ;
     }
 
-    // Fields to be shown on lists
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
+        // Fields to be shown on lists
         $listMapper
             ->addIdentifier('id', 'url', ['label' => 'label.form_id'])
             ->add('name', 'string', ['label' => 'label.form_name'])

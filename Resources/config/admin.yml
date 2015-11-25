@@ -32,6 +32,7 @@ services:
             - ~
             - Symbio\OrangeGate\FormBundle\Entity\Form
             - ~
+            - @orangegate.site.pool
         calls:
             #- [setUserManager, [@fos_user.user_manager]]
             - [setTranslationDomain, [SymbioOrangeGateFormBundle]]

@@ -7,9 +7,10 @@ services:
 
     orangegate.form.form.type.form:
         class: Symbio\OrangeGate\FormBundle\Form\Type\FormSelector
+        scope: request
         tags:
             - { name: form.type, alias: orangegate_form_form }
-        arguments: [ @doctrine ]
+        arguments: [ @doctrine, @orangegate.site.pool, @request ]
 
     orangegate.form.form.field.validation_type:
         class: Symbio\OrangeGate\FormBundle\Form\Type\FieldValidationType

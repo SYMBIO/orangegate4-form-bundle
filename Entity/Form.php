@@ -49,7 +49,7 @@ class Form
      * @var Site
      *
      * @ORM\ManyToOne(targetEntity="Symbio\OrangeGate\PageBundle\Entity\Site", cascade={"persist"})
-     * @ORM\JoinColumn(name="site_id", nullable=true)
+     * @ORM\JoinColumn(name="site_id", nullable=false)
      */
     protected $site;
 
