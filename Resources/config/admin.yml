@@ -1,4 +1,16 @@
 services:
+    orangegate.form.admin.recipient:
+        class: Symbio\OrangeGate\FormBundle\Admin\RecipientAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Content, label: Recipient }
+        arguments:
+            - ~
+            - Symbio\OrangeGate\FormBundle\Entity\Recipient
+            - ~
+        calls:
+            #- [setUserManager, [@fos_user.user_manager]]
+            - [setTranslationDomain, [SymbioOrangeGateFormBundle]]
+
     orangegate.form.admin.choice:
         class: Symbio\OrangeGate\FormBundle\Admin\ChoiceAdmin
         tags:
@@ -37,3 +49,4 @@ services:
             #- [setUserManager, [@fos_user.user_manager]]
             - [setTranslationDomain, [SymbioOrangeGateFormBundle]]
             - [addChild, ['@orangegate.form.admin.field']]
+            - [addChild, ['@orangegate.form.admin.recipient']]

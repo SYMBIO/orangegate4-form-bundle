@@ -114,6 +114,7 @@ class FormAdmin extends BaseAdmin
                 'actions' => [
                     'edit' => [],
                     'fields' =>  ['template' => 'SymbioOrangeGateFormBundle:FormAdmin:fields_button.html.twig'],
+                    'recipients' =>  ['template' => 'SymbioOrangeGateFormBundle:FormAdmin:recipients_button.html.twig'],
             ]])
         ;
     }

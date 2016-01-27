@@ -71,6 +71,7 @@ class Form
      * @var Recipient[]
      *
      * @ORM\OneToMany(targetEntity="Recipient", mappedBy="form", cascade={"persist"})
+     * @ORM\OrderBy({"id"="ASC"})
      */
     protected $recipients;
 
