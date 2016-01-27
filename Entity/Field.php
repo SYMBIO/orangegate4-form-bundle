@@ -10,6 +10,7 @@ namespace Symbio\OrangeGate\FormBundle\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Symbio\OrangeGate\FormBundle\Exception\InvalidArgumentException;
 use Symbio\OrangeGate\FormBundle\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -84,6 +85,7 @@ class Field
 
     /**
      * @ORM\OneToMany(targetEntity="Choice", mappedBy="field", cascade={"persist"})
+     * @ORM\OrderBy({"priority"="ASC", "id"="ASC"})
      */
     protected $choices;
 
@@ -237,10 +239,30 @@ class Field
     /**
      * @param mixed $choices
      * @return $this
+     * @throws InvalidArgumentException
      */
     public function setChoices($choices)
     {
-        $this->choices = $choices;
+        $callback = function ($a, $b) {
+            return ($a->getPriority() < $b->getPriority()) ? -1 : 1;
+        };
+
+        if (is_array($choices)) {
+            usort($choices, $callback);
+            $this->choices = new ArrayCollection($choices);
+        }
+        else if ($choices instanceof ArrayCollection) {
+            $this->choices =
+            $iterator = $choices->getIterator();
+            $iterator->uasort($callback);
+            $this->choices = new ArrayCollection(iterator_to_array($iterator));
+        }
+        else if (null === $choices) {
+            $this->choices = null;
+        }
+        else {
+            throw new InvalidArgumentException('$field must be ArrayCollection or null');
+        }
         return $this;
     }
 

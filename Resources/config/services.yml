@@ -7,7 +7,7 @@ services:
 
     orangegate.form.form.type.form:
         class: Symbio\OrangeGate\FormBundle\Form\Type\FormSelector
-        scope: request
+        scope: prototype
         tags:
             - { name: form.type, alias: orangegate_form_form }
         arguments: [ @doctrine, @orangegate.site.pool, @request ]

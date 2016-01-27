@@ -29,7 +29,10 @@ class FormSelector extends AbstractType
 
 
     /**
+     * FormSelector constructor.
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+     * @param SitePool $sitePool
+     * @param Request $request
      */
     public function __construct($doctrine, SitePool $sitePool, Request $request) {
         $this->repository = $doctrine->getManager()->getRepository('SymbioOrangeGateFormBundle:Form');

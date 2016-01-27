@@ -10,6 +10,7 @@ namespace Symbio\OrangeGate\FormBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symbio\OrangeGate\FormBundle\Exception\InvalidArgumentException;
 use Symbio\OrangeGate\PageBundle\Entity\Site;
 use Symbio\OrangeGate\FormBundle\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -67,16 +68,26 @@ class Form
     protected $emailFrom;
 
     /**
-     * @var Recipient
+     * @var Recipient[]
      *
      * @ORM\OneToMany(targetEntity="Recipient", mappedBy="form", cascade={"persist"})
      */
     protected $recipients;
 
     /**
+     * @var Field[]
+     *
      * @ORM\OneToMany(targetEntity="Field", mappedBy="form", cascade={"persist"})
+     * @ORM\OrderBy({"priority"="ASC", "id"="ASC"})
      */
     protected $fields;
+
+    /**
+     * @var SubmittedData[]
+     *
+     * @ORM\OneToMany(targetEntity="SubmittedData", mappedBy="form", cascade={"persist"})
+     */
+    protected $submittedData;
 
     /**
      * @ORM\OneToMany(targetEntity="FormTranslation", mappedBy="object", indexBy="locale", cascade={"persist","remove"}, orphanRemoval=true)
@@ -257,10 +268,48 @@ class Form
     /**
      * @param array $fields
      * @return $this
+     * @throws InvalidArgumentException
      */
     public function setFields($fields)
     {
-        $this->fields = $fields;
+        $callback = function ($a, $b) {
+            return ($a->getPriority() < $b->getPriority()) ? -1 : 1;
+        };
+
+        if (is_array($fields)) {
+            usort($fields, $callback);
+            $this->fields = new ArrayCollection($fields);
+        }
+        else if ($fields instanceof ArrayCollection) {
+            $this->fields =
+            $iterator = $fields->getIterator();
+            $iterator->uasort($callback);
+            $this->fields = new ArrayCollection(iterator_to_array($iterator));
+        }
+        else if (null === $fields) {
+            $this->fields = null;
+        }
+        else {
+            throw new InvalidArgumentException('$field must be ArrayCollection or null');
+        }
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubmittedData()
+    {
+        return $this->submittedData;
+    }
+
+    /**
+     * @param mixed $submittedData
+     * @return $this
+     */
+    public function setSubmittedData($submittedData)
+    {
+        $this->submittedData = $submittedData;
         return $this;
     }
 

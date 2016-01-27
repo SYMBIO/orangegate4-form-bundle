@@ -39,6 +39,9 @@
                     form = holder.find('form');
                     form.each(prepareAjaxForm);
                 })
+                .fail(function() {
+                    alert('Unexpected error while handling your request. Please try again later.');
+                })
                 .always(function() {
                     form.removeClass('disabled');
                     //todo unlock submit?

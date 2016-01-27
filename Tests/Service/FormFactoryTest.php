@@ -152,9 +152,9 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
         $formEntity = new Form(1, 'TestSimple', null, 1);
         $formEntity->setFields([
             new Field(1, 'Item 1', 'text', false, 1, 'none'),
-            new Field(2, 'Item 2', 'text', true, 1, 'number'),
-            new Field(3, 'Item 3', 'text', false, 1, 'email', 'neni email'),
-            new Field(4, 'Item 4', 'text', false, 1, 'regexp', 'neni ahoj', '/^ahoj$/')
+            new Field(2, 'Item 2', 'text',  true, 2, 'number'),
+            new Field(3, 'Item 3', 'text', false, 3, 'email', 'neni email'),
+            new Field(4, 'Item 4', 'text', false, 4, 'regexp', 'neni ahoj', '/^ahoj$/')
         ]);
 
         $factory = new FormFactory($this->getFormFactoryStub($formBuilder), $this->getTranslatorStub());

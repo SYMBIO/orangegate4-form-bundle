@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('orangegate_page');
+        $rootNode = $treeBuilder->root('orangegate_form');
 
         return $treeBuilder;
     }

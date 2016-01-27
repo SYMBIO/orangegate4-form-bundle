@@ -9,6 +9,7 @@
 
 namespace Symbio\OrangeGate\FormBundle\Controller;
 
+use Symbio\OrangeGate\FormBundle\Entity\SubmittedData;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,32 +29,70 @@ class FormController extends Controller
      */
     public function submitAction($formId, Request $request)
     {
+        $return = [
+            'success' => false,
+            'form'    => null,
+            'message' => null,
+        ];
+
         // test for http request
-        $formModel = $this->loadFormModel($formId);
+        try {
+            $formModel = $this->loadFormModel($formId);
+        } catch (NotFoundHttpException $e) {
+            if ($request->isXmlHttpRequest()) {
+                $return['message'] = $e->getMessage();
+                return new JsonResponse($return, 404);
+            } else {
+                throw $e;
+            }
+        }
         $formFactory = $this->get('orangegate.form.factory');
 
         $form = $formFactory->createForm($formModel);
         $form->handleRequest($request);
 
-        $return = [
-            'success' => false,
-            'form'    => null,
-        ];
 
         if ($form->isValid()) {
-            $return['success'] = true;
 
             $data = $formFactory->getFormData($formModel, $form);
 
-            // todo save data to db (time, ip, user_agent, ...)
+            // save form to db
+            try {
+                $dataObj = new SubmittedData(null, $request->getClientIp(), $request->headers->get('User-Agent'), $data, $formModel);
 
-            if ($formModel->isEmailable()) {
-                $this->get('orangegate.form.mailer')->sendFormDataEmail($data, $formModel);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($dataObj);
+                $em->flush();
+            } catch (\Exception $e) {
+                $this->get('logger')->critical(sprintf(
+                    'Cannot save data for orangegate form with id: %d. Exception message: %s',
+                    $formModel->getId(),
+                    $e->getMessage()
+                ));
+
+                $return['message'] = 'Error while saving form data: ' . $e->getMessage();
+                return new JsonResponse($return, 500);
             }
 
+            // send form via email
+            // if it fails, just log it an proceed
+            if ($formModel->isEmailable()) {
+                try {
+                    $this->get('orangegate.form.mailer')->sendFormDataEmail($data, $formModel);
+                } catch (\Exception $e) {
+                    $this->get('logger')->error(sprintf(
+                        'Cannot send email with data for orangegate form with id: %d. Exception message: %s',
+                        $formModel->getId(),
+                        $e->getMessage()
+                    ));
+                }
+            }
+
+            $return['success'] = true;
             $form = $formFactory->createForm($formModel);
         }
 
+        // render form
         $return['form'] = $this->renderView('SymbioOrangeGateFormBundle:Block:_form.html.twig', [
             'form' => $form->createView(),
             'formId' => $formModel->getId(),
@@ -64,6 +103,7 @@ class FormController extends Controller
 
 
     /**
+     * Load form with given ID or fail (404)
      * @param int $id
      * @return Form
      * @throws NotFoundHttpException
